@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -80,6 +81,46 @@ fun commonButton(
 }
 
 @Composable
+fun levelbtn(
+    text: String,
+    elevation: Dp = 4.dp,
+    pressedElevation: Dp = 2.dp, onClick: () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val currentElevation by animateDpAsState(
+        if (isPressed) pressedElevation else elevation
+    )
+
+    val scale by animateFloatAsState(if (isPressed) 0.95f else 1f)
+
+    Button(
+        onClick = onClick,
+        interactionSource = interactionSource,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(id = R.color.level_btn),
+            contentColor = Color.Black
+        ),
+        shape = RoundedCornerShape(16.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = currentElevation
+        ),
+        modifier = Modifier
+            .padding(1.dp)
+            .scale(scale)
+            .width(200.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(4.dp)
+        )
+    }
+}
+@Composable
 fun MutableInteractionSource.collectIsPressedAsState(): State<Boolean> {
     val isPressed = rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(this) {
@@ -103,6 +144,9 @@ fun showall() {
         heading(text = "Heading")
         heading2(text = "Heading")
         write("First planet of Solar System")
+        levelbtn(text = "Easy Level") {
+            
+        }
     }
 
 }
