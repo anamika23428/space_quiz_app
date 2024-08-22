@@ -13,5 +13,6 @@
     <color name="App_Dark">#102C5A</color>
     <color name="App_Light">#90CAF9</color>
     <color name="level_btn">#D1C4E9</color>
+    <color name="btn_pressed">#FFEB3B</color>
 
 </resources>

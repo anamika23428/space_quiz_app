@@ -21,10 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -37,8 +39,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apace_app.R
+import com.example.apace_app.home.ButtonStateViewModel
 import com.example.apace_app.robotomedium
 import com.example.apace_app.robotoregular
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 @Composable
 fun commonButton(
@@ -80,14 +85,24 @@ fun commonButton(
     }
 }
 
+
 @Composable
-fun levelbtn(
+fun LevelBtn(
+    id: Int,
     text: String,
     elevation: Dp = 4.dp,
-    pressedElevation: Dp = 2.dp, onClick: () -> Unit,
+    pressedElevation: Dp = 2.dp,
+    onClick: () -> Unit,
+    viewModel: ButtonStateViewModel
 ) {
+    val isClicked by remember { derivedStateOf { viewModel.clickedButton == id } }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+
+    val onClickInternal: () -> Unit = {
+        onClick()
+        viewModel.clickedButton = id
+    }
 
     val currentElevation by animateDpAsState(
         if (isPressed) pressedElevation else elevation
@@ -96,10 +111,10 @@ fun levelbtn(
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1f)
 
     Button(
-        onClick = onClick,
+        onClick = onClickInternal,
         interactionSource = interactionSource,
         colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(id = R.color.level_btn),
+            containerColor = if (isClicked) colorResource(id = R.color.btn_pressed) else colorResource(id = R.color.level_btn),
             contentColor = Color.Black
         ),
         shape = RoundedCornerShape(16.dp),
@@ -120,6 +135,8 @@ fun levelbtn(
         )
     }
 }
+
+
 @Composable
 fun MutableInteractionSource.collectIsPressedAsState(): State<Boolean> {
     val isPressed = rememberSaveable { mutableStateOf(false) }
@@ -144,9 +161,17 @@ fun showall() {
         heading(text = "Heading")
         heading2(text = "Heading")
         write("First planet of Solar System")
-        levelbtn(text = "Easy Level") {
+        val viewModel: ButtonStateViewModel = viewModel()
+        LevelBtn(
+            id = 1, // You can provide an ID here
+            text = "Easy Level",
+            viewModel = viewModel,
+            onClick = {
+                // Handle Easy Level button click here
+            }
+        )
             
-        }
+
     }
 
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Solid Color Background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/App_Light"/> <!-- Reference to color resource -->
+        </shape>
+    </item>
+
+    <!-- Color Overlay Layer -->
+
+</layer-list>
