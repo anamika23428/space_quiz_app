@@ -1,5 +1,7 @@
 package com.example.apace_app.Quiz
 
+import androidx.annotation.RawRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -46,14 +51,19 @@ import com.example.apace_app.navigation.Routes
 import kotlinx.coroutines.delay
 
 
-@Composable
-fun QuizApp(questionList: List<Question>, navHostController: NavHostController) {
-    // Remember the current question index state
-    val currentIndex = remember { mutableStateOf(0) }
-    // State to remember the selected option
-    val selectedOption = remember { mutableStateOf<String?>(null) }
 
-    // Get the current question based on the index
+@Composable
+fun QuizApp(
+    questionList: List<Question>,
+    navHostController: NavHostController,
+    difficultyLevel: Int
+) {
+    var buttontext = remember { mutableStateOf("Next") }
+    val currentIndex = remember { mutableStateOf(0) }
+    val selectedOption = remember { mutableStateOf<String?>(null) }
+    val correctAnswers = remember { mutableStateOf(0) }
+    val isOptionCorrect = remember { mutableStateOf<Boolean?>(null) }  // Track if the selected option is correct or not
+
     val currentQuestion = questionList[currentIndex.value]
 
     Column(
@@ -61,62 +71,101 @@ fun QuizApp(questionList: List<Question>, navHostController: NavHostController) 
             .fillMaxSize()
             .background(color = colorResource(id = R.color.App_Light))
     ) {
-        heading(text = "Space Quiz")
+        heading(text = "Space Quiz - Level $difficultyLevel")
 
-        Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            head(text = "Question ${currentIndex.value + 1}")
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            question(currentQuestion.questionText)
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxWidth()
+        Box {
+            Image(
+                painter = painterResource(id = R.drawable.spacebgg), // Replace with your image resource
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop // Adjust image scaling as needed
+            )
+            Column(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(currentQuestion.options.size) { index ->
-                    val optionText = currentQuestion.options[index]
-                    Options(
-                        text = optionText,
-                        isSelected = selectedOption.value == optionText,
-                        onClick = {
-                            selectedOption.value = optionText
+                head(text = "Question ${currentIndex.value + 1}")
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                question(currentQuestion.questionText)
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(currentQuestion.options.size) { index ->
+                        val optionText = currentQuestion.options[index]
+                        val isSelected = selectedOption.value == optionText
+                        val isCorrect = optionText == currentQuestion.correctAnswer
+                        val backgroundColor = when {
+                            selectedOption.value != null -> when {
+                                isSelected && isOptionCorrect.value == false -> Color.Red
+                                isCorrect -> Color.Green
+                                else -> Color.White
+                            }
+                            else -> Color.White
                         }
-                    )
+
+                        Options(
+                            text = optionText,
+                            isSelected = isSelected,
+                            onClick = {
+                                if (selectedOption.value == null) {
+                                    selectedOption.value = optionText
+                                    isOptionCorrect.value =
+                                        optionText == currentQuestion.correctAnswer
+                                }
+                            },
+                            backgroundColor = backgroundColor
+                        )
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.padding(20.dp))
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            commonButton(text = "Next") {
-                // Update the current question index
-                if (currentIndex.value < questionList.size - 1) {
-                    currentIndex.value++
-                    selectedOption.value = null // Reset the selected option for the next question
-                } else {
-                    navHostController.navigate(Routes.Result.routes)
+            Spacer(modifier = Modifier.padding(24.dp))
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                commonButton(text = buttontext.value) {
+                    if (selectedOption.value == currentQuestion.correctAnswer) {
+                        correctAnswers.value++
+                    }
+                    if (currentIndex.value == questionList.size - 2) {
+                        buttontext.value = "Finish"
+                    }
+
+                    if (currentIndex.value < questionList.size - 1) {
+                        currentIndex.value++
+                        selectedOption.value = null
+                        isOptionCorrect.value = null
+                    } else {
+                        navHostController.navigate("${Routes.Result.routes}/${correctAnswers.value}")
+                    }
                 }
+
             }
         }
     }
 }
 
 
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun QuizAppPrev(navController1: NavHostController = rememberNavController()) {
-    QuizApp(sampleQuestions, navController1)
-}
+
 
 @Composable
-fun AnimatedStrikeAnimation(animationOffset: Dp) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.rocket))
+@Preview(showBackground = true, showSystemUi = true)
+fun QuizAppPrev(
+    navController1: NavHostController = rememberNavController(),
+    difficultyLevel: Int = 1 // This is the additional integer parameter (1 to 3)
+) {
+    QuizApp(sampleQuestions, navController1, difficultyLevel)
+}
+
+
+@Composable
+fun AnimatedStrikeAnimation(animationOffset: Dp, @RawRes animationRes: Int,
+) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(animationRes))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         iterations = LottieConstants.IterateForever
@@ -128,51 +177,15 @@ fun AnimatedStrikeAnimation(animationOffset: Dp) {
             progress = progress,
             modifier = Modifier
                 .offset(y = animationOffset) // Move animation based on offset
-                .size(100.dp) // Adjust size as needed
+                .size(240.dp) // Adjust size as needed
                 .align(Alignment.BottomCenter) // Align as needed
         )
     }
 }
 
 
-@Composable
-fun MainScreen() {
-    var offset by remember { mutableStateOf(0.dp) }
-    var isAnimating by remember { mutableStateOf(false) }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-
-        AnimatedStrikeAnimation(animationOffset = offset)
-
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = {
-                if (!isAnimating) {
-                    isAnimating = true
-
-                }
-            }) {
-                Text("Animate Upward")
-            }
-
-            if (isAnimating) {
-                LaunchedEffect(Unit) {
-                    // Example of upward movement
-                    for (i in 0..1000) {
-                        offset = (50.dp - i.dp).coerceAtLeast(0.dp)
-                        delay(20) // Adjust speed of movement
-                    }
-                    isAnimating = false
-                }
-            }
-        }
 
 
-    }
-}
+
 
 

@@ -1,5 +1,6 @@
 package com.example.apace_app.home
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,13 +28,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.apace_app.Quiz.AnimatedStrikeAnimation
 import com.example.apace_app.R
 import com.example.apace_app.common.LevelBtn
 import com.example.apace_app.common.heading
+import com.example.apace_app.common.toast
 import com.example.apace_app.navigation.Routes
 
 @Composable
-fun Home(navHostController: NavHostController) {
+fun Home(navHostController: NavHostController,context: Context) {
     val viewModel: ButtonStateViewModel = viewModel()
 
     Surface(
@@ -40,7 +45,7 @@ fun Home(navHostController: NavHostController) {
         color = colorResource(id = R.color.App_Light)
     ) {
         Column {
-            heading(text = "Quiz App")
+            heading(text = "SpaceQuest")
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -48,15 +53,16 @@ fun Home(navHostController: NavHostController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.img),
-                    contentDescription = "Start Image",
-                    modifier = Modifier
-                        .size(150.dp) // Adjust size as needed
-                        .clickable {
-                            // Handle image click here
-                        }
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.img),
+//                    contentDescription = "Start Image",
+//                    modifier = Modifier
+//                        .size(150.dp)
+//                        .clickable {
+//                            // Handle image click here
+//                        }
+//                )
+                AnimatedStrikeAnimation(animationOffset = 5.dp, animationRes = R.raw.solar)
 
                 LevelSelectionCard(viewModel)
 
@@ -66,9 +72,16 @@ fun Home(navHostController: NavHostController) {
                     painter = painterResource(id = R.drawable.start_btn),
                     contentDescription = "Start Image",
                     modifier = Modifier
-                        .size(200.dp) // Adjust size as needed
+                        .size(200.dp)
                         .clickable {
-                            navHostController.navigate(Routes.Quiz.routes)
+                            // Navigate to the Quiz screen with the selected difficulty level
+                            if (viewModel.clickedButton == -1)
+                                toast(context = context, "Please Select Level")
+                            else {
+                                val selectedLevel = viewModel.clickedButton
+
+                                navHostController.navigate("${Routes.Quiz.routes}/$selectedLevel")
+                            }
                         }
                 )
             }
@@ -76,6 +89,11 @@ fun Home(navHostController: NavHostController) {
     }
 }
 
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun show(){
+    Home(navHostController = rememberNavController(), LocalContext.current)
+}
 @Composable
 fun LevelSelectionCard(viewModel: ButtonStateViewModel) {
     Card(
@@ -86,7 +104,7 @@ fun LevelSelectionCard(viewModel: ButtonStateViewModel) {
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.App_Dark) // Use your desired color here
         ),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(12.dp)
     ) {
         Column(
             modifier = Modifier

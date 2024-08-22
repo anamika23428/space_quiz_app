@@ -5,6 +5,8 @@ import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -74,7 +76,7 @@ fun commonButton(
             defaultElevation = currentElevation
         ),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(16.dp)
             .scale(scale)
             .fillMaxWidth()
     ) {
@@ -91,7 +93,7 @@ fun commonButton(
 fun LevelBtn(
     id: Int,
     text: String,
-    elevation: Dp = 4.dp,
+    elevation: Dp = 12.dp,
     pressedElevation: Dp = 2.dp,
     onClick: () -> Unit,
     viewModel: ButtonStateViewModel
@@ -115,7 +117,7 @@ fun LevelBtn(
         onClick = onClickInternal,
         interactionSource = interactionSource,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isClicked) colorResource(id = R.color.Yello_Secondary) else colorResource(id = R.color.level_btn),
+            containerColor = if (isClicked) colorResource(id = R.color.Yello_Secondary) else colorResource(id = R.color.Highlight),
             contentColor = Color.Black
         ),
         shape = RoundedCornerShape(16.dp),
@@ -131,7 +133,7 @@ fun LevelBtn(
             text = text,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = Color.White,
             modifier = Modifier.padding(4.dp)
         )
     }
@@ -180,6 +182,19 @@ fun write(text: String = "IIT Mandi keeps the health and wellness") {
             .padding(16.dp)
     )
 }
+@Composable
+fun writer(text: String = "IIT Mandi keeps the health and wellness",isSelected: Boolean) {
+
+    Text(
+        textAlign = TextAlign.Center,
+        text = text, fontFamily = robotomedium,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Medium,
+        color = if(!isSelected) colorResource(id = R.color.App_Dark) else Color.White,
+        modifier = Modifier
+            .padding(16.dp)
+    )
+}
 
         @Composable
 fun head(text: String = "Question") {
@@ -197,6 +212,8 @@ fun head(text: String = "Question") {
 @Composable
 fun question(text:String){
     Surface(tonalElevation = 8.dp,
+        border = BorderStroke(3.dp, color = colorResource(id = R.color.Highlight)),
+
         shadowElevation = 8.dp,
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
@@ -236,21 +253,20 @@ fun heading(text: String) {
 fun Options(
     text: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    backgroundColor: Color = Color.White
 ) {
-    val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) colorResource(id = R.color.Highlight) else Color.White
-    )
-
     Surface(
+        border = BorderStroke(3.dp, color = colorResource(id = R.color.Highlight)),
         tonalElevation = 12.dp,
         shadowElevation = 12.dp,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
             .height(100.dp)
-            .clickable { onClick() },
+//            .background(backgroundColor)
+            .clickable(enabled = !isSelected) { onClick() }, // Disable click if already selected
         color = backgroundColor
     ) {
         Column(
@@ -258,10 +274,11 @@ fun Options(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            write(text = text) // Assuming `write` is just a placeholder for `Text`
+            writer(text = text,isSelected)
         }
     }
 }
+
 
 
 @Composable
@@ -299,6 +316,7 @@ fun greetview(
     Text(
         text = text,
         fontSize = 60.sp,
+        color = Color.White,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(4.dp)
     )
