@@ -75,7 +75,7 @@ fun QuizApp(
 
         Box {
             Image(
-                painter = painterResource(id = R.drawable.spacebgg), // Replace with your image resource
+                painter = painterResource(id = R.drawable.bg), // Replace with your image resource
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop // Adjust image scaling as needed

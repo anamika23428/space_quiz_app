@@ -212,7 +212,7 @@ fun head(text: String = "Question") {
 @Composable
 fun question(text:String){
     Surface(tonalElevation = 8.dp,
-        border = BorderStroke(3.dp, color = colorResource(id = R.color.Highlight)),
+        border = BorderStroke(1.dp, color = colorResource(id = R.color.Highlight)),
 
         shadowElevation = 8.dp,
         shape = RoundedCornerShape(12.dp),
@@ -257,7 +257,7 @@ fun Options(
     backgroundColor: Color = Color.White
 ) {
     Surface(
-        border = BorderStroke(3.dp, color = colorResource(id = R.color.Highlight)),
+        border = BorderStroke(1.dp, color = colorResource(id = R.color.Highlight)),
         tonalElevation = 12.dp,
         shadowElevation = 12.dp,
         shape = RoundedCornerShape(16.dp),
