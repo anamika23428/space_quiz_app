@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.apace_app.Quiz.QuizAppPrev
+import com.example.apace_app.Result.ResultApp
 import com.example.apace_app.home.Home
 import com.example.apace_app.navigation.Routes
 
@@ -28,10 +29,10 @@ fun BottomNav(navController: NavHostController) {
                 Home(navController1)
             }
             composable(route = Routes.Quiz.routes) {
-                QuizAppPrev()
+                QuizAppPrev(navController1)
             }
             composable(route = Routes.Result.routes) {
-                QuizAppPrev()
+                ResultApp()
             }
 
 

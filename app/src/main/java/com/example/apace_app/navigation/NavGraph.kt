@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.apace_app.Quiz.QuizAppPrev
+import com.example.apace_app.Result.ResultApp
 import com.example.apace_app.navigation.Routes
 import org.example.campuscrew.screens.BottomNav
 
@@ -26,10 +27,10 @@ fun NavGraph(navController:NavHostController){
         }
 
         composable(route = Routes.Quiz.routes) {
-            QuizAppPrev()
+            QuizAppPrev(navController)
         }
         composable(route = Routes.Result.routes) {
-            QuizAppPrev()
+            ResultApp()
         }
     }
 

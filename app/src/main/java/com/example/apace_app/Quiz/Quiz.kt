@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +29,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -41,12 +42,12 @@ import com.example.apace_app.common.commonButton
 import com.example.apace_app.common.head
 import com.example.apace_app.common.heading
 import com.example.apace_app.common.question
-import com.example.apace_app.common.write
+import com.example.apace_app.navigation.Routes
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun QuizApp(questionList: List<Question>) {
+fun QuizApp(questionList: List<Question>, navHostController: NavHostController) {
     // Remember the current question index state
     val currentIndex = remember { mutableStateOf(0) }
     // State to remember the selected option
@@ -98,22 +99,28 @@ fun QuizApp(questionList: List<Question>) {
                 if (currentIndex.value < questionList.size - 1) {
                     currentIndex.value++
                     selectedOption.value = null // Reset the selected option for the next question
+                } else {
+                    navHostController.navigate(Routes.Result.routes)
                 }
             }
         }
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+
 @Composable
-fun QuizAppPrev() {
-    QuizApp(sampleQuestions)
-    }
+@Preview(showBackground = true, showSystemUi = true)
+fun QuizAppPrev(navController1: NavHostController = rememberNavController()) {
+    QuizApp(sampleQuestions, navController1)
+}
 
 @Composable
 fun AnimatedStrikeAnimation(animationOffset: Dp) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.rocket))
-    val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever)
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
 
     Box(modifier = Modifier) {
         LottieAnimation(
@@ -126,12 +133,6 @@ fun AnimatedStrikeAnimation(animationOffset: Dp) {
         )
     }
 }
-
-
-
-
-
-
 
 
 @Composable
@@ -158,17 +159,17 @@ fun MainScreen() {
                 Text("Animate Upward")
             }
 
-                if(isAnimating){
-                    LaunchedEffect(Unit) {
-                        // Example of upward movement
-                        for (i in 0..1000) {
-                            offset = (50.dp - i.dp).coerceAtLeast(0.dp)
-                            delay(20) // Adjust speed of movement
-                        }
-                        isAnimating = false
+            if (isAnimating) {
+                LaunchedEffect(Unit) {
+                    // Example of upward movement
+                    for (i in 0..1000) {
+                        offset = (50.dp - i.dp).coerceAtLeast(0.dp)
+                        delay(20) // Adjust speed of movement
                     }
+                    isAnimating = false
                 }
             }
+        }
 
 
     }
