@@ -11,6 +11,7 @@
     <color name="Yello_Secondary">#FD9E02</color>
     <color name="Highlight">#E95A53</color>
     <color name="App_Dark">#102C5A</color>
-    <color name="App_Light">#5E96F4</color>
+    <color name="App_Light">#90CAF9</color>
+    <color name="level_btn">#D1C4E9</color>
 
 </resources>
