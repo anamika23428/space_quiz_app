@@ -15,13 +15,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.apace_app.R
 import com.example.apace_app.common.commonButton
 import com.example.apace_app.common.heading
+import com.example.apace_app.navigation.Routes
 
 
 @Composable
-fun Home() {
+fun Home(navController: NavHostController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = colorResource(id = R.color.App_Light)
@@ -48,7 +50,7 @@ fun Home() {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 commonButton(text = "Start") {
-                    // Handle button click
+                    navController.navigate(Routes.Quiz.routes)
                 }
             }
         }
@@ -66,9 +68,4 @@ fun DifficultyOption(text: String) {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
 
-fun vieww(){
-    Home()
-}

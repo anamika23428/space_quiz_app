@@ -2,15 +2,21 @@ package com.example.apace_app.common
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -66,7 +72,7 @@ fun commonButton(
             defaultElevation = currentElevation
         ),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(24.dp)
             .scale(scale)
             .fillMaxWidth()
     ) {
@@ -96,34 +102,79 @@ fun MutableInteractionSource.collectIsPressedAsState(): State<Boolean> {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun showall() {
-    Column {
-        commonButton(text = "START") {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+    color = colorResource(id = R.color.App_Light)
+            ){
+        Column {
+            commonButton(text = "START") {
 
+            }
+            heading(text = "Heading")
+            heading2(text = "Heading")
+            write("First planet of Solar System")
+            question(text = "Which is the first Planet of Solar System")
         }
-        heading(text = "Heading")
-        heading2(text = "Heading")
-        write("First planet of Solar System")
     }
+
 
 }
 
 @Composable
-fun options(text:String){
+fun Options(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) colorResource(id = R.color.Highlight) else Color.White
+    )
 
+    Surface(
+        tonalElevation = 12.dp,
+        shadowElevation = 12.dp,
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .height(100.dp)
+            .clickable { onClick() },
+        color = backgroundColor
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            write(text = text) // Assuming `write` is just a placeholder for `Text`
+        }
+    }
 }
+
 @Composable
 fun write(text: String = "IIT Mandi keeps the health and wellness") {
 
     Text(
-        textAlign = TextAlign.Left,
-        text = text, fontFamily = robotoregular,
+        textAlign = TextAlign.Center,
+        text = text, fontFamily = robotomedium,
         fontSize = 24.sp,
-        letterSpacing = 0.5.sp,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
+        color = colorResource(id = R.color.App_Primary),
+        modifier = Modifier
+            .padding(16.dp)
+    )
+}
+@Composable
+fun head(text: String = "Question") {
+
+    Text(
+        textAlign = TextAlign.Center,
+        text = text, fontFamily = robotomedium,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
         color = Color.White,
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 10.dp)
-            .fillMaxWidth()
     )
 }
 @Composable
@@ -211,5 +262,21 @@ fun wcommonButton(
             fontWeight = FontWeight.Bold,
 //            modifier = Modifier.padding(4.dp)
         )
+    }
+}
+
+@Composable
+fun question(text:String){
+    Surface(tonalElevation = 8.dp,
+        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            ,
+        color = Color.White
+    ) {
+
+        write(text)
     }
 }
