@@ -136,6 +136,21 @@ fun LevelBtn(
     }
 }
 
+@Composable
+fun greetview(
+    text: String,
+    fontSize: Int = 16,
+    color: Color = Color.Black,
+    fontWeight: FontWeight = FontWeight.Normal,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        fontSize = 60.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(4.dp)
+    )
+}
 
 @Composable
 fun MutableInteractionSource.collectIsPressedAsState(): State<Boolean> {
@@ -161,6 +176,7 @@ fun showall() {
         heading(text = "Heading")
         heading2(text = "Heading")
         write("First planet of Solar System")
+        greetview(text = "good")
         val viewModel: ButtonStateViewModel = viewModel()
         LevelBtn(
             id = 1, // You can provide an ID here
